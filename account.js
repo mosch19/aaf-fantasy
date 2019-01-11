@@ -5,17 +5,15 @@ module.exports = {
   createUser ({ username, password }) {
     console.log(`Add user ${username}`)
     const { salt, hash } = saltHashPassword({ password })
-    return knex('user').insert({
+    return knex('users').insert({
       salt,
       encrypted_password: hash,
       username
-    })
-    .then(() => {return{success: true}})
-    .catch(e => {return{success: false}})
+    }, ['id'])
   },
   authenticate ({ username, password }) {
     console.log(`Authenticating user ${username}`)
-    return knex('user').where({ username })
+    return knex('users').where({ username })
       .then(([user]) => {
         if (!user) return { success: false }
         const { hash } = saltHashPassword({
@@ -24,6 +22,9 @@ module.exports = {
         })
         return { success: hash === user.encrypted_password }
       })
+  },
+  getUserId ({ username }) {
+    return knex('users').where({ username }).select('id')
   }
 }
 
