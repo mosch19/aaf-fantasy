@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const account = require('./account')
 const team = require('./team')
+const players = require('./players')
 const app = express()
 
 app.use(express.static('public'))
@@ -51,6 +52,16 @@ app.post('/createUser', (req, res) => {
       })
       .then(() => {
         res.sendStatus(200)
+      })
+      .catch(e => res.status(400).json(e.message))
+  })
+  app.get('/players/:position', (req, res, next) => {
+    players
+      .getPlayersByPosition(
+        req.params.position
+      )
+      .then(players_array => {
+        res.status(200).send(players_array)
       })
       .catch(e => res.status(400).json(e.message))
   })

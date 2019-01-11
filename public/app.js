@@ -41,7 +41,46 @@ UpdateTeamName.addEventListener('submit', (e) => {
         alert('failure')
       }
   })
+})
 
+const PlayerQuery = document.querySelector('.PlayersQuery')
+PlayerQuery.addEventListener('submit', (e) => {
+  e.preventDefault()
+  const position = PlayerQuery.querySelector('.position').value
+
+  get('/players/' + position)
+    .then(result => {
+      const div = document.getElementById("tableSection")
+      // clear table
+      while (div.firstChild) {
+        div.removeChild(div.firstChild)
+      }
+      
+      const table = document.createElement("table")
+      const tableHeader = document.createElement("th")
+      tableHeader.innerHTML = `All ${position}s`
+      table.appendChild(tableHeader)
+
+      result.body.getReader().read().then((player, done) => {
+        if (done) return
+        const row = document.createElement("tr")
+        const cell = document.createElement("td")
+        cell.innerText = player.name
+        row.appendChild(cell)
+        table.appendChild(row)
+      })
+
+      // for (player in playerArray) {
+      //   console.log(index, player)
+      //   const row = document.createElement("tr")
+      //   const cell = document.createElement("td")
+      //   cell.innerText = player.name
+      //   row.appendChild(cell)
+      //   table.appendChild(row)
+      // }
+
+      div.appendChild(table)
+    })
 })
 
 function post (path, data) {
@@ -52,5 +91,15 @@ function post (path, data) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
+  })
+}
+
+function get (path, data) {
+  return window.fetch(path, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
   })
 }
