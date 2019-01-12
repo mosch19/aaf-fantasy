@@ -13,5 +13,13 @@ module.exports = {
     addOwner ({ owner_id, player_id }) {
         return knex('players').where({ id: player_id })
             .update({ owner_id, owner_id }, ['id'])
+    },
+    dropOwner ({ player_id }) {
+        return knex('players').where({ id: player_id })
+            .update({ owner_id: null }, ['id'])
+    },
+    getPlayersByOwner (owner_id) {
+        return knex('players').where({ owner_id })
+            .select('*')
     }
 }

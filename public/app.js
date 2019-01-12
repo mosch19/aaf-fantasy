@@ -63,6 +63,34 @@ AddPlayerToTeam.addEventListener('submit', (e) => {
     })
 })
 
+const DropPlayerFromTeam = document.querySelector('.dropPlayer')
+DropPlayerFromTeam.addEventListener('submit', (e) => {
+  e.preventDefault()
+  const owner_id = DropPlayerFromTeam.querySelector('.owner_id').value
+  const player_id = DropPlayerFromTeam.querySelector('.player_id').value
+
+  post('/dropPlayer', {owner_id, player_id })
+    .then(result => {
+      if (result.status === 200) {
+        alert('Player dropped')
+      } else {
+        alert(result.data)
+      }
+    })
+})
+
+const TeamRoster = document.querySelector('.TeamRoster')
+TeamRoster.addEventListener('submit', (e) => {
+  e.preventDefault()
+  const owner_id = TeamRoster.querySelector('.owner_id').value
+  // TODO have singular query per table using .modify() and looping through paramters. Seperate routes is dumb.
+  get('/roster/' + owner_id)
+    .then(response => response.json())
+    .then(response => {
+      console.log(response)
+    })
+})
+
 const PlayerQuery = document.querySelector('.PlayersQuery')
 PlayerQuery.addEventListener('submit', (e) => {
   e.preventDefault()
