@@ -55,6 +55,24 @@ app.post('/createUser', (req, res) => {
       })
       .catch(e => res.status(400).json(e.message))
   })
+  app.post('/addPlayer', (req, res, next) => {
+    players
+      .getOwner({
+        player_id: req.body.player_id
+      })
+      .then(response => {
+        const current_owner_id = response[0].owner_id
+        if (current_owner_id != null) throw 'Player already owned'
+        return players.addOwner({
+          owner_id: req.body.owner_id,
+          player_id: req.body.player_id
+        })
+      })
+      .then(player_id => {
+        res.sendStatus(200)
+      })
+      .catch(e => res.status(400).json({ error: e }))
+  })
   app.get('/players/:position', (req, res, next) => {
     players
       .getPlayersByPosition(

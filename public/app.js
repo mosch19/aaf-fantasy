@@ -43,41 +43,60 @@ UpdateTeamName.addEventListener('submit', (e) => {
   })
 })
 
+const AddPlayerToTeam = document.querySelector('.addPlayer')
+AddPlayerToTeam.addEventListener('submit', (e) => {
+  e.preventDefault()
+  const owner_id = AddPlayerToTeam.querySelector('.owner_id').value
+  const player_id = AddPlayerToTeam.querySelector('.player_id').value
+
+  post('/addPlayer', { owner_id, player_id })
+    .then(result => {
+      if (result.status === 200) {
+        alert('Player added')
+      } else {
+        /*
+        TODO this is getting back a promise that needs to be unwrapped with .json() before getting the errors. 
+        Come up with better way to get errors to display to user.
+        */
+        alert(result.data)
+      }
+    })
+})
+
 const PlayerQuery = document.querySelector('.PlayersQuery')
 PlayerQuery.addEventListener('submit', (e) => {
   e.preventDefault()
   const position = PlayerQuery.querySelector('.position').value
 
   get('/players/' + position)
-    .then(result => {
+    .then(response => response.json())
+    .then(response => {
+      console.log(response)
       const div = document.getElementById("tableSection")
       // clear table
       while (div.firstChild) {
         div.removeChild(div.firstChild)
       }
-      
+
+
       const table = document.createElement("table")
-      const tableHeader = document.createElement("th")
-      tableHeader.innerHTML = `All ${position}s`
-      table.appendChild(tableHeader)
+      // TODO height is being read in as a date
+      for (property in response[0]) {
+        let header = document.createElement("th")
+        header.innerHTML = property
+        table.appendChild(header)
+      }
 
-      result.body.getReader().read().then((player, done) => {
-        if (done) return
+      for (index in response) {
         const row = document.createElement("tr")
-        const cell = document.createElement("td")
-        cell.innerText = player.name
-        row.appendChild(cell)
+        for (key in response[index]) {
+          let field = document.createElement("td")
+          field.innerText = response[index][key]
+          row.appendChild(field)
+        }
+        
         table.appendChild(row)
-      })
-
-      // for (player in playerArray) {
-      //   console.log(index, player)
-      //   const row = document.createElement("tr")
-      //   const cell = document.createElement("td")
-      //   cell.innerText = player.name
-      //   row.appendChild(cell)
-      //   table.appendChild(row)
-      // }
+      }
 
       div.appendChild(table)
     })
