@@ -38,7 +38,7 @@ app.post('/createUser', (req, res) => {
         else res.sendStatus(401)
       })
   })
-  app.post('/updateTeamName', (req, res, next) => {
+  app.put('/updateTeamName', (req, res, next) => {
     account
       .getUserId({
         username: req.body.username
@@ -55,60 +55,56 @@ app.post('/createUser', (req, res) => {
       })
       .catch(e => res.status(400).json(e.message))
   })
-  app.post('/addPlayer', (req, res, next) => {
+  app.get('/players', (req, res, next) => {
     players
-      .getOwner({
-        player_id: req.body.player_id
-      })
-      .then(response => {
-        const current_owner_id = response[0].owner_id
-        if (current_owner_id != null) throw 'Player already owned'
-        return players.addOwner({
-          owner_id: req.body.owner_id,
-          player_id: req.body.player_id
-        })
-      })
-      .then(player_id => {
-        res.sendStatus(200)
-      })
-      .catch(e => res.status(400).json({ error: e }))
-  })
-  app.post('/dropPlayer', (req, res, next) => {
-    players
-      .getOwner({
-        player_id: req.body.player_id
-      })
-      .then(response => {
-        const current_owner_id = response[0].owner_id
-        if (current_owner_id === null) throw 'Player is not owned'
-        return players.dropOwner({
-          owner_id: req.body.owner_id,
-          player_id: req.body.player_id
-        })
-      })
-      .then(player_id => {
-        res.sendStatus(200)
-      })
-      .catch(e => res.status(400).json({ error: e }))
-  })
-  app.get('/players/:position', (req, res, next) => {
-    players
-      .getPlayersByPosition(
-        req.params.position
-      )
+      .get(req.query)
       .then(players_array => {
         res.status(200).send(players_array)
       })
       .catch(e => res.status(400).json(e.message))
+  }) // TODO need to deactivate player on drop
+  app.put('/playerTransaction', (req, res, next) => {
+    const player_id = req.body.player_id
+    players
+      .get({ id: player_id })
+      .then(response => {
+        const player =response[0]
+        const owner = parseInt(req.body.owner_id)
+        const currentOwner = response[0].owner_id
+        console.log(req.body, currentOwner === owner)
+        if (player.waiver_required === true) {
+          /*
+          // submit claim. Will this have a separate database that stores waiver requests? 
+          Then script is run that completes the actions in sequential order?
+          */
+        }
+        if (req.body.add === true && currentOwner === null) {
+          // add player, add in check for if waiver is required
+          return players.updatePlayer(player_id, { owner_id: owner})
+        } else if (req.body.add === false && currentOwner === owner) {
+          // drop player
+          return players.updatePlayer(player_id, { owner_id: null })
+        } else {
+          throw 'Illegal transaction'
+        }
+      })
+      .catch(e => console.log(e))
   })
-  app.get('/roster/:owner', (req, res, next) => {
-    players.getPlayersByOwner(
-      req.params.owner
-    )
-    .then(players_array => {
-      res.status(200).send(players_array)
-    })
-    .catch(e => res.status(400).json(e.message))
+  app.put('/activatePlayer', (req, res, next) => {
+    const active = req.body.active
+    players
+      .update(
+        req.body.id, { active }
+      )
+      .then(response => { res.sendStatus(200) })
+      .catch(e => {
+        console.log('In error')
+        res.status(400).json(e.message)
+      })
+  })
+  app.get('/myTeam', (req, res, next) => {
+    console.log('/myTeam')
+    return res.sendFile(__dirname + '/myTeam.html')
   })
 
   app.listen(7555, () => {

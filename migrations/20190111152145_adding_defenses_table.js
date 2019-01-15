@@ -31,6 +31,7 @@ exports.up = function(knex, Promise) {
         t.integer('punting_touchbacks').unsigned().defaultTo(0)
         t.integer('punting_blocked').unsigned().defaultTo(0)
         t.integer('punting_td_returned').unsigned().defaultTo(0)
+        t.boolean('active').notNullable().defaultTo(false)
     }),
     knex.schema.createTable('defenses', function (t) {
         t.increments('id').primary()
@@ -48,6 +49,7 @@ exports.up = function(knex, Promise) {
         t.integer('safeties').defaultTo(0)
         t.integer('blocked_punts').defaultTo(0)
         t.integer('sacks').defaultTo(0)
+        t.boolean('active').notNullable().defaultTo(false)
     })    
   ])
 };

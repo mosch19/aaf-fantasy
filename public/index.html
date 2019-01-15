@@ -6,8 +6,8 @@
 <body>
   <form class="Login">
     <h1>Login</h1>
-    <input type="text" class="username" placeholder="username">
-    <input type="password" class="password" placeholder="password">
+    <input type="text" class="username" placeholder="username" name="username" id="username">
+    <input type="password" class="password" placeholder="password" name="password" id="password">
     <input type="submit" value="Login">
   </form>
   <form class="UpdateTeamName">
@@ -35,6 +35,16 @@
     <input type="number" class="player_id" placeholder="player_id">
     <input type="submit" value="Drop">
   </form>
+  <form class="activatePlayer">
+      <h1>Activate player</h1>
+      <input type="number" class="player_id" placeholder="player_id">
+      <input type="submit" value="Activate">
+    </form>
+  <form class="deactivatePlayer">
+      <h1>Bench player</h1>
+      <input type="number" class="player_id" placeholder="player_id">
+      <input type="submit" value="Bench">
+    </form>
   <form class="TeamRoster">
     <h1>View roster</h1>
     <input type="number" class="owner_id" placeholder="owner_id">
@@ -43,6 +53,7 @@
   <form class="PlayersQuery">
     <h1>Get players</h1>
     <select class="position" placeholder="position">
+      <option value="All">All</option>
       <option value="QB">QB</option>
       <option value="RB">RB</option>
       <option value="WR">WR</option>

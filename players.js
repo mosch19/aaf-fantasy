@@ -1,25 +1,14 @@
 const knex = require('knex')(require('./knexfile'))
 
 module.exports = {
-    getPlayersByPosition (position) {
-        console.log(`Querying for ${position}`)
-        return knex('players').where({ position })
+    get (clause) {
+        console.log(`Getting where ${clause}`)
+        return query = knex('players').where(clause)
             .select('*')
-    },
-    getOwner ({ player_id }) {
+    }, // TODO be able to batch update players: There should be an edit roster button with no db changes until user hits submit.
+    update (player_id, update) {
+        console.log(`Updating ${player_id}`)
         return knex('players').where({ id: player_id })
-            .select('owner_id')
-    },
-    addOwner ({ owner_id, player_id }) {
-        return knex('players').where({ id: player_id })
-            .update({ owner_id, owner_id }, ['id'])
-    },
-    dropOwner ({ player_id }) {
-        return knex('players').where({ id: player_id })
-            .update({ owner_id: null }, ['id'])
-    },
-    getPlayersByOwner (owner_id) {
-        return knex('players').where({ owner_id })
-            .select('*')
+            .update(update, ['id'])
     }
 }
