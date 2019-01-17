@@ -20,7 +20,8 @@ module.exports = {
           password,
           salt: user.salt
         })
-        return { success: hash === user.encrypted_password }
+        if (hash !== user.encrypted_password) throw 'Incorrect password'
+        return user.id
       })
   },
   getUserId ({ username }) {

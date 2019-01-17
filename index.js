@@ -33,9 +33,16 @@ app.post('/createUser', (req, res) => {
         username: req.body.username,
         password: req.body.password
       })
-      .then(({success}) => {
-        if (success) res.sendStatus(200)
-        else res.sendStatus(401)
+      .then(user_id => {
+        console.log(user_id)
+        return team.get({ user_id })
+      })
+      .then(team => {
+        res.status(200).json(team[0])
+      })
+      .catch(e => {
+        console.log(e)
+        res.status(401).json(e.message)
       })
   })
   app.put('/updateTeamName', (req, res, next) => {
@@ -52,6 +59,14 @@ app.post('/createUser', (req, res) => {
       })
       .then(() => {
         res.sendStatus(200)
+      })
+      .catch(e => res.status(400).json(e.message))
+  })
+  app.get('/teams', (req, res, next) => {
+    team
+      .get(req.query)
+      .then(team_array => {
+        res.status(200).send(team_array)
       })
       .catch(e => res.status(400).json(e.message))
   })

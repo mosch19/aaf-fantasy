@@ -19,9 +19,18 @@ Login.addEventListener('submit', (e) => {
   const password = Login.querySelector('.password').value
 
   post('/login', { username, password })
-    .then(({ status }) => {
-      if (status !== 200) alert('login failure')
-      else window.location.href = '/myTeam'
+    .then(res => {
+      if (res.status != 200) alert('Login failure')
+      else return res.json()
+    })
+    .then(team => {
+      console.log(team)
+        sessionStorage.setItem('user_id', team.user_id)
+        console.log(sessionStorage.getItem('user_id'))
+        window.location.href = '/myTeam'
+    })
+    .catch(e => {
+      console.log('in catch')
     })
 })
 

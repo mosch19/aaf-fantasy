@@ -1,7 +1,20 @@
 <!DOCTYPE html>
 <html>
-        <body>
-                <p>My team</p>
-            </body>
-    
+    <head>
+        <title>My team</title>
+    </head>
+    <body onload="getTeamInfo()">
+        <div id="roster">
+            </div>
+        <script>
+            function getTeamInfo() {
+                const params = '?owner_id=' + sessionStorage.getItem('user_id')
+                get('/players' + params)
+                    .then(response => response.json())
+                    .then(response => {
+                        console.log(response)
+                    })
+            }
+        </script>
+    </body>
 </html>
