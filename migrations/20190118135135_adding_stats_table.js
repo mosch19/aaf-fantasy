@@ -1,19 +1,6 @@
 
 exports.up = function(knex, Promise) {
-  // return Promise.all([
-  //   knex.schema.createTable('players', function(t) {
-  //       t.increments('id').primary()
-  //       t.string('name').notNullable()
-  //       t.string('position').notNullable()
-  //       t.string('team').notNullable()
-  //       t.integer('owner_id').unsigned()
-  //       t.foreign('owner_id').references('teams.id')
-  //       t.string('height')
-  //       t.string('weight')
-  //       t.string('college')
-  //       t.boolean('active').notNullable().defaultTo(false)
-  //   }),
-      return knex.schema.createTable('stats', function(t) {
+    return knex.schema.createTable('stats', function(t) {
         t.integer('player_id').unsigned()
         t.foreign('player_id').references('players.id')
         t.integer('week')
@@ -48,12 +35,11 @@ exports.up = function(knex, Promise) {
         t.integer('defense_blocked_punts').defaultTo(0)
         t.integer('defense_sacks').defaultTo(0)
       })
-  // ])
 };
 
 exports.down = function(knex, Promise) {
   return Promise.all([
-    // knex.schema.dropTableIfExists('players'),
-    knex.schema.dropTableIfExists('stats')
-])
+    //   knex.schema.dropTableIfExists('players'),
+      knex.schema.dropTableIfExists('stats')
+  ])
 };

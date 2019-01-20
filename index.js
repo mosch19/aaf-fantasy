@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const account = require('./account')
 const team = require('./team')
 const players = require('./players')
+const stats = require('./stats')
 const app = express()
 
 app.use(express.static('public'))
@@ -78,6 +79,18 @@ app.post('/createUser', (req, res) => {
       })
       .catch(e => res.status(400).json(e.message))
   }) // TODO need to deactivate player on drop
+  app.get('/stats', (req, res, next) => {
+    stats
+      .get(req.query)
+      .then(playerStats => {
+        console.log(playerStats)
+        res.sendStatus(200)
+      })
+      .catch(e => {
+        console.log(e)
+        res.status(400).json(e.message)
+      })
+  })
   app.put('/playerTransaction', (req, res, next) => {
     const player_id = req.body.player_id
     players

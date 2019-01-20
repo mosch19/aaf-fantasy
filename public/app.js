@@ -118,6 +118,18 @@ DropPlayerFromTeam.addEventListener('submit', (e) => {
     })
 })
 
+const ViewPlayerStats = document.querySelector('.viewPlayer')
+ViewPlayerStats.addEventListener('submit', (e) => {
+  e.preventDefault()
+  const player_id = ViewPlayerStats.querySelector('.player_id').value
+
+  get('/stats?player_id=' + player_id)
+    .then(response => response.json())
+    .then(response => {
+      console.log(response)
+    })
+})
+
 const TeamRoster = document.querySelector('.TeamRoster')
 TeamRoster.addEventListener('submit', (e) => {
   e.preventDefault()
@@ -186,7 +198,6 @@ function post (path, data) {
 }
 
 function put (path, data) {
-  console.log(data)
   return window.fetch(path, {
     method: 'PUT',
     headers: {
